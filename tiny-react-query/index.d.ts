@@ -1,4 +1,5 @@
 interface QueryState<T, K> {
+  lastUpdated: number;
   status: 'loading' | 'success' | 'error';
   isFetching: boolean;
   data: T;
@@ -25,4 +26,5 @@ interface QueryObserver {
 interface QueryOptions {
   queryKey: string[];
   queryFn: () => Promise<any>;
+  staleTime?: number;
 }

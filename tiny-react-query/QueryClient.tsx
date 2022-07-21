@@ -35,6 +35,7 @@ export const createQuery = <T, K>(client: QueryClient, { queryKey, queryFn }) =>
     state: {
       status: 'loading',
       isFetching: true,
+      lastUpdated: null,
       data: null,
       error: null,
     },
@@ -66,6 +67,7 @@ export const createQuery = <T, K>(client: QueryClient, { queryKey, queryFn }) =>
             query.setState((state) => ({
               ...state,
               status: 'success',
+              lastUpdated: Date.now(),
               data,
             }));
           } catch (error) {

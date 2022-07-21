@@ -3,7 +3,8 @@ import { QueryClient, queryClientContext } from 'tiny-react-query/QueryClient';
 
 export const useQuery = <T, K>(
   queryKey: QueryOptions['queryKey'],
-  queryFn: QueryOptions['queryFn']
+  queryFn: QueryOptions['queryFn'],
+  { staleTime }: Omit<QueryOptions, 'queryKey' | 'queryFn'> = {}
 ) => {
   const client = useContext(queryClientContext);
   const observerRef = useRef<QueryObserver>(null);
@@ -11,7 +12,7 @@ export const useQuery = <T, K>(
   const [, rerender] = useReducer((i) => i + 1, 0);
 
   if (!observerRef.current) {
-    observerRef.current = createQueryObserver<T, K>(client, { queryKey, queryFn });
+    observerRef.current = createQueryObserver<T, K>(client, { queryKey, queryFn, staleTime });
   }
 
   useEffect(() => {
@@ -21,7 +22,10 @@ export const useQuery = <T, K>(
   return observerRef.current.getResult();
 };
 
-const createQueryObserver = <T, K>(client: QueryClient, { queryKey, queryFn }: QueryOptions) => {
+const createQueryObserver = <T, K>(
+  client: QueryClient,
+  { queryKey, queryFn, staleTime = 0 }: QueryOptions
+) => {
   const query = client.getQuery<T, K>({ queryKey, queryFn });
 
   const observer = {
@@ -31,9 +35,14 @@ const createQueryObserver = <T, K>(client: QueryClient, { queryKey, queryFn }: Q
       observer.notify = callback;
       const unsubscribe = query.subscribe(observer);
 
-      query.fetch();
+      observer.fetch();
 
       return unsubscribe;
+    },
+    fetch: () => {
+      if (!query.state.lastUpdated || Date.now() - query.state.lastUpdated > staleTime) {
+        query.fetch();
+      }
     },
   };
 
