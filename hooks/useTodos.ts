@@ -6,14 +6,18 @@ export const sleep = (ms: number) => {
 };
 
 const useTodos = () => {
-  return useQuery<Todo[], Error>(['todos'], async () => {
-    await sleep(1000);
+  return useQuery<Todo[], Error>(
+    ['todos'],
+    async () => {
+      await sleep(1000);
 
-    const response = await fetch('https://jsonplaceholder.typicode.com/todos/');
-    const data = await response.json();
+      const response = await fetch('https://jsonplaceholder.typicode.com/todos/');
+      const data = await response.json();
 
-    return data.slice(0, 5);
-  });
+      return data.slice(0, 5);
+    },
+    { staleTime: 3000 }
+  );
 };
 
 export default useTodos;
