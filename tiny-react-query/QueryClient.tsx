@@ -26,12 +26,16 @@ export class QueryClient {
   };
 }
 
-export const createQuery = <T, K>(client: QueryClient, { queryKey, queryFn }) => {
+export const createQuery = <T, K>(
+  client: QueryClient,
+  { queryKey, queryFn, cacheTime = 5 * 60 * 1000 }
+) => {
   let query: Query<T, K> = {
     queryKey,
     queryHash: JSON.stringify(queryKey),
     promise: null,
     subscribers: [],
+    garbageCollectionTimeout: null,
     state: {
       status: 'loading',
       isFetching: true,
@@ -42,9 +46,29 @@ export const createQuery = <T, K>(client: QueryClient, { queryKey, queryFn }) =>
 
     subscribe: (subscriber) => {
       query.subscribers.push(subscriber);
+
+      query.unscheduleGarbageCollection();
+
       return () => {
         query.subscribers = query.subscribers.filter((s) => s !== subscriber);
+
+        if (query.subscribers.length === 0) {
+          query.scheduleGarbageCollection();
+        }
       };
+    },
+
+    scheduleGarbageCollection: () => {
+      query.garbageCollectionTimeout = setTimeout(() => {
+        client.queries = client.queries.filter((q) => q !== query);
+      }, cacheTime);
+    },
+
+    unscheduleGarbageCollection: () => {
+      if (query.garbageCollectionTimeout) {
+        clearTimeout(query.garbageCollectionTimeout);
+        query.garbageCollectionTimeout = null;
+      }
     },
 
     setState: (updaterFn) => {

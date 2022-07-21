@@ -11,10 +11,13 @@ interface Query<T = any, K = any> {
   queryHash: string;
   promise: Promise<any>;
   subscribers: QueryObserver[];
+  garbageCollectionTimeout: number;
   state: QueryState<T, K>;
   subscribe: (QueryObserver) => void;
   fetch: () => void;
   setState: (state: any) => void;
+  scheduleGarbageCollection: () => void;
+  unscheduleGarbageCollection: () => void;
 }
 
 interface QueryObserver {
@@ -27,4 +30,5 @@ interface QueryOptions {
   queryKey: string[];
   queryFn: () => Promise<any>;
   staleTime?: number;
+  cacheTime?: number;
 }
