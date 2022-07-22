@@ -4,7 +4,7 @@ import { QueryClient, useQueryClient } from 'tiny-react-query/QueryClient';
 const useQuery = <T, K>(
   queryKey: QueryOptions['queryKey'],
   queryFn: QueryOptions['queryFn'],
-  { staleTime, cacheTime }: Omit<QueryOptions, 'queryKey' | 'queryFn'> = {}
+  { staleTime, cacheTime, enabled }: Omit<QueryOptions, 'queryKey' | 'queryFn'> = {}
 ) => {
   const client = useQueryClient();
   const observerRef = useRef<QueryObserver>(null);
@@ -17,6 +17,7 @@ const useQuery = <T, K>(
       queryFn,
       staleTime,
       cacheTime,
+      enabled,
     });
   }
 
@@ -29,7 +30,7 @@ const useQuery = <T, K>(
 
 const createQueryObserver = <T, K>(
   client: QueryClient,
-  { queryKey, queryFn, staleTime = 0, cacheTime }: QueryOptions
+  { queryKey, queryFn, staleTime = 0, cacheTime, enabled = true }: QueryOptions
 ) => {
   const query = client.getQuery<T, K>({ queryKey, queryFn, cacheTime });
 
@@ -45,7 +46,10 @@ const createQueryObserver = <T, K>(
       return unsubscribe;
     },
     fetch: () => {
-      if (!query.state.lastUpdated || Date.now() - query.state.lastUpdated > staleTime) {
+      if (
+        enabled &&
+        (!query.state.lastUpdated || Date.now() - query.state.lastUpdated > staleTime)
+      ) {
         query.fetch();
       }
     },

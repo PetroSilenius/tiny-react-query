@@ -14,6 +14,7 @@ The implementation is lackluster and not meant for any kind of real usage. It wa
 - useQuery hook
   - Stale time
   - Cache time
+  - enabled
 
 ## Getting Started
 

@@ -32,4 +32,5 @@ interface QueryOptions {
   queryFn: () => Promise<any>;
   staleTime?: number;
   cacheTime?: number;
+  enabled?: boolean;
 }
