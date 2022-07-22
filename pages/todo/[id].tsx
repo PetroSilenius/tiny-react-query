@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import styles from 'styles/Home.module.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,25 +11,21 @@ const Home = () => {
 
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Tiny React Query</title>
-        <meta name="description" content="Creating simplified react query as a tiny package" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <main className={styles.main}>
-        <div>
+        <div className={styles.backButton}>
           <Link href="/">🔙</Link>
-          {!todoId && status === 'loading' && <p>Loading...</p>}
-          {status === 'error' && <p>Error: {error.message}</p>}
-          {status === 'success' && (
-            <label>
-              <h1>{todo.title}</h1>
-              <input type="checkbox" defaultChecked={todo.completed} />
-            </label>
-          )}
-          <div> {isFetching && <p>Background updating...</p>}</div>
         </div>
+        <div>
+          {status === 'loading' && <p className={styles.loading}>Loading...</p>}
+          {status === 'error' && <p className={styles.error}>Error: {error.message}</p>}
+        </div>
+        {status === 'success' && (
+          <label>
+            <input type="checkbox" defaultChecked={todo.completed} />
+            {todo.title}
+          </label>
+        )}
+        <div>{isFetching && <p className={styles.fetching}>Background updating...</p>}</div>
       </main>
     </div>
   );
