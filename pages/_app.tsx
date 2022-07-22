@@ -1,5 +1,5 @@
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { QueryClient, QueryClientProvider } from 'tiny-react-query';
+import { QueryClient, QueryClientProvider, ReactQueryDevtools } from 'tiny-react-query';
 import Head from 'next/head';
 import '../styles/globals.css';
 
@@ -14,6 +14,7 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Component {...pageProps} />
+      <ReactQueryDevtools />
     </QueryClientProvider>
   );
 }
