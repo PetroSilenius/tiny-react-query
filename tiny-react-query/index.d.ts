@@ -24,6 +24,7 @@ interface QueryObserver {
   notify: () => void;
   getResult: () => QueryState;
   subscribe: (callback) => void;
+  fetch: () => void;
 }
 
 interface QueryOptions {
