@@ -2,7 +2,13 @@ import { createContext, useEffect } from 'react';
 
 export const queryClientContext = createContext<QueryClient>(null);
 
-export const QueryClientProvider = ({ children, client }) => {
+export const QueryClientProvider = ({
+  children,
+  client,
+}: {
+  children: JSX.Element | JSX.Element[];
+  client: QueryClient;
+}) => {
   useEffect(() => {
     const onFocus = () => {
       client.queries.forEach((query) => {
@@ -24,9 +30,11 @@ export const QueryClientProvider = ({ children, client }) => {
 
 export class QueryClient {
   queries: Query[];
+  subscribers: Array<() => void>;
 
   constructor() {
     this.queries = [];
+    this.subscribers = [];
   }
 
   getQuery = <T, K>(options: QueryOptions) => {
@@ -39,6 +47,20 @@ export class QueryClient {
     }
 
     return query;
+  };
+
+  subscribe = (callback) => {
+    this.subscribers.push(callback);
+
+    return () => {
+      this.subscribers = this.subscribers.filter((subscriber) => subscriber !== callback);
+    };
+  };
+
+  notify = () => {
+    this.subscribers.forEach((callback) => {
+      callback();
+    });
   };
 }
 
@@ -78,6 +100,8 @@ export const createQuery = <T, K>(
       query.garbageCollectionTimeout = setTimeout(() => {
         client.queries = client.queries.filter((q) => q !== query);
       }, cacheTime);
+
+      client.notify();
     },
 
     unscheduleGarbageCollection: () => {
@@ -90,6 +114,7 @@ export const createQuery = <T, K>(
     setState: (updaterFn) => {
       query.state = updaterFn(query.state);
       query.subscribers.forEach((subscriber) => subscriber.notify());
+      client.notify();
     },
 
     fetch: () => {
