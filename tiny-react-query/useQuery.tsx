@@ -1,7 +1,7 @@
 import { useContext, useEffect, useReducer, useRef } from 'react';
 import { QueryClient, queryClientContext } from 'tiny-react-query/QueryClient';
 
-export const useQuery = <T, K>(
+const useQuery = <T, K>(
   queryKey: QueryOptions['queryKey'],
   queryFn: QueryOptions['queryFn'],
   { staleTime, cacheTime }: Omit<QueryOptions, 'queryKey' | 'queryFn'> = {}
@@ -33,7 +33,7 @@ const createQueryObserver = <T, K>(
 ) => {
   const query = client.getQuery<T, K>({ queryKey, queryFn, cacheTime });
 
-  const observer = {
+  const observer: QueryObserver = {
     notify: () => {},
     getResult: () => query.state,
     subscribe: (callback) => {
@@ -53,3 +53,5 @@ const createQueryObserver = <T, K>(
 
   return observer;
 };
+
+export default useQuery;
