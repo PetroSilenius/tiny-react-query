@@ -1,9 +1,9 @@
-import { useContext, useEffect, useReducer } from 'react';
-import { queryClientContext } from 'tiny-react-query/QueryClient';
+import { useEffect, useReducer } from 'react';
+import { useQueryClient } from 'tiny-react-query/QueryClient';
 import styles from 'styles/DevTools.module.css';
 
 const ReactQueryDevtools = () => {
-  const client = useContext(queryClientContext);
+  const client = useQueryClient();
   const [, rerender] = useReducer((i) => i + 1, 0);
 
   useEffect(() => {

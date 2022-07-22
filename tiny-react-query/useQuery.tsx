@@ -1,12 +1,12 @@
-import { useContext, useEffect, useReducer, useRef } from 'react';
-import { QueryClient, queryClientContext } from 'tiny-react-query/QueryClient';
+import { useEffect, useReducer, useRef } from 'react';
+import { QueryClient, useQueryClient } from 'tiny-react-query/QueryClient';
 
 const useQuery = <T, K>(
   queryKey: QueryOptions['queryKey'],
   queryFn: QueryOptions['queryFn'],
   { staleTime, cacheTime }: Omit<QueryOptions, 'queryKey' | 'queryFn'> = {}
 ) => {
-  const client = useContext(queryClientContext);
+  const client = useQueryClient();
   const observerRef = useRef<QueryObserver>(null);
 
   const [, rerender] = useReducer((i) => i + 1, 0);

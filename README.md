@@ -7,11 +7,13 @@ The implementation is lackluster and not meant for any kind of real usage. It wa
 ## Implemented functionalities
 
 - QueryClient
+  - QueryClientProvider
+  - useQueryClient hook
+  - QueryCache
+  - Window focus refetching
 - useQuery hook
-- QueryCache
-- Window focus refetching
-- Stale time
-- Cache time
+  - Stale time
+  - Cache time
 
 ## Getting Started
 

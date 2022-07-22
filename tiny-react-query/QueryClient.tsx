@@ -1,4 +1,4 @@
-import { createContext, useEffect } from 'react';
+import { createContext, useContext, useEffect } from 'react';
 
 export const queryClientContext = createContext<QueryClient>(null);
 
@@ -27,6 +27,14 @@ export const QueryClientProvider = ({
 
   return <queryClientContext.Provider value={client}>{children}</queryClientContext.Provider>;
 };
+
+export const useQueryClient = () => {
+  const client = useContext(queryClientContext);
+  if (!client) {
+    throw new Error('useQueryClient must be used within a QueryClientProvider');
+  }
+  return client;
+}
 
 export class QueryClient {
   queries: Query[];
