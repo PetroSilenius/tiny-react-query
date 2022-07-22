@@ -15,7 +15,7 @@ interface Query<T = any, K = any> {
   state: QueryState<T, K>;
   subscribe: (QueryObserver) => void;
   fetch: () => void;
-  setState: (state: any) => void;
+  setState: (state: (state: QueryState<T, K>) => QueryState<T, K>) => void;
   scheduleGarbageCollection: () => void;
   unscheduleGarbageCollection: () => void;
 }

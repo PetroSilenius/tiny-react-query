@@ -34,7 +34,7 @@ export const useQueryClient = () => {
     throw new Error('useQueryClient must be used within a QueryClientProvider');
   }
   return client;
-}
+};
 
 export class QueryClient {
   queries: Query[];
