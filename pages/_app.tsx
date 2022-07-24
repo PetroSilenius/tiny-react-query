@@ -1,5 +1,5 @@
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-// import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { QueryClient, QueryClientProvider, ReactQueryDevtools } from 'tiny-react-query';
 import Head from 'next/head';
 import '../styles/globals.css';

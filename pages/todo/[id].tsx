@@ -3,9 +3,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import useTodo from 'hooks/useTodo';
 
-const Home = () => {
+const Todo = () => {
   const { query } = useRouter();
-  const todoId = query.id;
+
+  // BUG: bun-framework-next empty next/router query key https://github.com/oven-sh/bun/issues/860
+  const todoId = (query.id ?? query['']) as string;
 
   const { data: todo, status, isFetching, error } = useTodo(todoId);
 
@@ -31,4 +33,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Todo;
