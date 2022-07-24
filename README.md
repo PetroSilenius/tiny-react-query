@@ -15,6 +15,7 @@ The implementation is lackluster and not meant for any kind of real usage. It wa
   - Stale time
   - Cache time
   - enabled
+  - retry
 
 ## Getting Started
 
