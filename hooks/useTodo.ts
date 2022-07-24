@@ -11,6 +11,10 @@ const useTodo = (todoId: string) => {
       const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${todoId}`);
       const data = await response.json();
 
+      if (!response.ok) {
+        throw new Error(response.statusText ? response.statusText : 'Unknown error');
+      }
+
       return data;
     },
     { cacheTime: 5000, enabled: Boolean(todoId) }
