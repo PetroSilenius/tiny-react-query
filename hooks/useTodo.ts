@@ -17,7 +17,7 @@ const useTodo = (todoId: string) => {
 
       return data;
     },
-    { cacheTime: 5000, enabled: Boolean(todoId) }
+    { cacheTime: 5000, enabled: Boolean(todoId), retry: 2 }
   );
 };
 
