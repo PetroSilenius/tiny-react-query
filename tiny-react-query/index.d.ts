@@ -7,11 +7,12 @@ interface QueryState<T, K> {
 }
 
 interface Query<T = any, K = any> {
-  queryKey: string;
+  queryKey: string[];
   queryHash: string;
   promise: Promise<any>;
   subscribers: QueryObserver[];
-  garbageCollectionTimeout: number;
+  garbageCollectionTimeout: Timeout;
+  timesRetried: number;
   state: QueryState<T, K>;
   subscribe: (QueryObserver) => void;
   fetch: () => void;
@@ -33,4 +34,5 @@ interface QueryOptions {
   staleTime?: number;
   cacheTime?: number;
   enabled?: boolean;
+  retry?: boolean | number;
 }

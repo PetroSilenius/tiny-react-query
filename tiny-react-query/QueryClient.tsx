@@ -74,7 +74,7 @@ export class QueryClient {
 
 export const createQuery = <T, K>(
   client: QueryClient,
-  { queryKey, queryFn, cacheTime = 5 * 60 * 1000 }
+  { queryKey, queryFn, cacheTime = 5 * 60 * 1000, retry = 3 }: QueryOptions
 ) => {
   let query: Query<T, K> = {
     queryKey,
@@ -82,6 +82,7 @@ export const createQuery = <T, K>(
     promise: null,
     subscribers: [],
     garbageCollectionTimeout: null,
+    timesRetried: 0,
     state: {
       status: 'loading',
       isFetching: true,
@@ -127,6 +128,10 @@ export const createQuery = <T, K>(
 
     fetch: () => {
       if (!query.promise) {
+        let isError = false;
+        const errorWillBeRetried =
+          retry === true || (typeof retry === 'number' && query.timesRetried < retry);
+
         query.promise = (async () => {
           query.setState((state) => ({
             ...state,
@@ -144,13 +149,25 @@ export const createQuery = <T, K>(
               data,
             }));
           } catch (error) {
-            query.setState((state) => ({
-              ...state,
-              status: 'error',
-              error,
-            }));
+            isError = true;
+
+            if (errorWillBeRetried) {
+              query.timesRetried++;
+              query.promise = null;
+              query.fetch();
+            } else {
+              query.setState((state) => ({
+                ...state,
+                status: 'error',
+                error,
+              }));
+            }
           } finally {
             query.promise = null;
+
+            if (isError && errorWillBeRetried) {
+              return;
+            }
 
             query.setState((state) => ({
               ...state,
